@@ -1,0 +1,23 @@
+{
+    "name": "equation-examples",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "build": "typechain --target ethers-v5 --out-dir typechain-types './abis/*.json' && tsc",
+        "example": "node dist/src/index.js",
+        "clean": "rm -rf dist typechain-types"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "decimal.js": "^10.4.3",
+        "dotenv": "^16.3.1",
+        "node-fetch": "^2.7.0"
+    },
+    "devDependencies": {
+        "@typechain/ethers-v5": "^11.1.1",
+        "@types/node-fetch": "^2.6.6",
+        "prettier": "^3.0.3"
+    }
+}

@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "lib": ["es2020", "esnext"],
+        "alwaysStrict": true,
+        "moduleResolution": "node",
+        "module": "commonjs",
+        "esModuleInterop": true,
+        "target": "es2020",
+        "declaration": true,
+        "declarationDir": "dist",
+        "outDir": "dist",
+        "forceConsistentCasingInFileNames": true,
+        "sourceMap": true
+    },
+    "include": ["./src/**/*.ts", "./typechain-types"]
+}
