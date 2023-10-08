@@ -3,6 +3,10 @@ import Decimal from "decimal.js";
 
 export async function decodeGraphQLResponse(response: Response) {
     const json = await response.json();
+    console.log(json);
+    if (json.error) {
+        throw new Error(`GraphQL server error: ${json.error}`);
+    }
     if (json.errors) {
         throw new Error(`GraphQL server error: ${json.errors[0].message}`);
     }

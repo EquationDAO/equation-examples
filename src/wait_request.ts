@@ -60,6 +60,78 @@ export async function waitDecreaseRequest(txPromise: Promise<ContractTransaction
     );
 }
 
+export async function waitOrderBookRequest(txPromise: Promise<ContractTransaction>) {
+    const tx = await txPromise;
+    const receipt = await tx.wait();
+    console.debug(`create request success, tx hash ${tx.hash}, status ${receipt.status}`);
+    if (receipt.status !== 1) {
+        throw new Error(`create request failed, tx hash ${tx.hash}, status ${receipt.status}`);
+    }
+
+    return new Promise((resolve, reject) => {
+        let times = 0;
+        const id = setInterval(async () => {
+            times += 1;
+            console.debug(`wait request ${times} times`);
+
+            const rejectIfNeeded = () => {
+                if (times >= Config.maxWaitTimes) {
+                    clearInterval(id);
+                    reject(new Error("wait request timeout"));
+                }
+            };
+
+            const response = await fetch(`${Config.graphQLEndpoint}`, {
+                method: "POST",
+                body: JSON.stringify({
+                    query: `
+                    query Orders {
+                        orders(
+                          where: {createdHash: "${tx.hash}"}
+                          orderBy: index
+                          orderDirection: asc
+                        ) {
+                          acceptableTradePrice
+                          acceptableTradePriceX96
+                          account
+                          cancelledHash
+                          cancelledTimestamp
+                          createdHash
+                          createdTimestamp
+                          executedHash
+                          executedTimestamp
+                          id
+                          index
+                          lastOperationTimestamp
+                          marginDelta
+                          receiver
+                          side
+                          sizeDelta
+                          status
+                          triggerAbove
+                          triggerMarketPrice
+                          triggerMarketPriceX96
+                          type
+                          updatedHash
+                          updatedTimestamp
+                        }
+                      }
+                    `,
+                }),
+                headers: {"Content-Type": "application/json"},
+            });
+
+            const requests = (await decodeGraphQLResponse(response)).orders;
+            if (requests.length === 0) {
+                rejectIfNeeded();
+                return;
+            }
+
+            resolve(requests);
+        }, Config.waitInterval);
+    });
+}
+
 async function waitRequest(txPromise: Promise<ContractTransaction>, queryBuilder: (tx: ContractTransaction) => string) {
     const tx = await txPromise;
     const receipt = await tx.wait();
@@ -75,7 +147,7 @@ async function waitRequest(txPromise: Promise<ContractTransaction>, queryBuilder
             console.debug(`wait request ${times} times`);
 
             const rejectIfNeeded = () => {
-                if (times >= 60) {
+                if (times >= Config.maxWaitTimes) {
                     clearInterval(id);
                     reject(new Error("wait request timeout"));
                 }
@@ -107,6 +179,6 @@ async function waitRequest(txPromise: Promise<ContractTransaction>, queryBuilder
             }
 
             rejectIfNeeded();
-        }, 2000);
+        }, Config.waitInterval);
     });
 }
