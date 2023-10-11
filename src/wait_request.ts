@@ -132,6 +132,12 @@ export async function waitOrderBookRequest(txPromise: Promise<ContractTransactio
     });
 }
 
+/**
+ * Wait for the request to be executed or cancelled. If the request is executed, return the request.
+ * If the request is cancelled or timeout, reject the promise.
+ * @param txPromise The promise of the transaction
+ * @param queryBuilder The function to build the query string
+ */
 async function waitRequest(txPromise: Promise<ContractTransaction>, queryBuilder: (tx: ContractTransaction) => string) {
     const tx = await txPromise;
     const receipt = await tx.wait();

@@ -9,7 +9,19 @@ import {
 import {isLong} from "./side";
 import {ceilDiv, mulDivUp, toBigInt} from "./util";
 
-export function calculateFundingRate(pool: any, currentTime: Date) {
+/**
+ * Calculate the funding rate of the pool.
+ * @example
+ * ```ts
+ *  const poolID = "0x5dcbeceb35a0e781ed60d859a97bf239ba5bf7dc";
+ *  const poolData = await loadPool(poolID);
+ *  const fundingRate = calculateFundingRate(poolData, new Date());
+ *  console.log("fundingRate", fundingRate);
+ * ```
+ * @param pool The pool data from graphQL
+ * @param currentTime The current time
+ */
+export function calculateFundingRate(pool: any, currentTime: Date): {fundingRateX96: bigint; fundingRate: Decimal} {
     const sample = pool.globalFundingRateSample;
     const position = pool.globalLiquidityPosition;
     const priceState = pool.priceState;

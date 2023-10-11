@@ -10,6 +10,7 @@ import {mulDivUp} from "./util";
 import {BASIS_POINTS_DIVISOR} from "./constants";
 import {waitDecreaseRequest, waitIncreaseRequest, waitOrderBookRequest} from "./wait_request";
 import {loadPositions} from "./position";
+import {calculateDepth} from "./depth";
 
 async function main() {
     const poolID = "0x5dcbeceb35a0e781ed60d859a97bf239ba5bf7dc";
@@ -24,6 +25,9 @@ async function main() {
 
     const premiumRate = calculatePremiumRate(poolData);
     console.log("premiumRate", premiumRate);
+
+    const depth = calculateDepth(poolData, BigInt(priceData.index_price_x96));
+    console.log("depth", depth);
 
     const provider = new ethers.providers.JsonRpcProvider("https://arbitrum-goerli.publicnode.com");
     const wallet = new ethers.Wallet(`${process.env.PRIVATE_KEY}`, provider);

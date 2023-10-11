@@ -3,7 +3,29 @@ import {BASIS_POINTS_DIVISOR, Q96, TOKEN_DECIMALS, USD_DECIMALS} from "./constan
 import {flipSide, isLong} from "./side";
 import {min, mulDiv, toBigInt, toDecimal, toPriceDecimal} from "./util";
 
-export function calculateDepth(pool: any, indexPriceX96: bigint) {
+export interface Depth {
+    premiumRateRangeX96: {left: bigint; right: bigint};
+    marketPriceRangeX96: {left: bigint; right: bigint};
+    tradePriceX96: bigint;
+    tradePrice: Decimal;
+    size: Decimal;
+    total: Decimal;
+}
+
+/**
+ * Calculate the depth of the pool.
+ * @example
+ * ```ts
+ *  const poolID = "0x5dcbeceb35a0e781ed60d859a97bf239ba5bf7dc";
+ *  const poolData = await loadPool(poolID);
+ *  const priceData = await loadPrice(poolData.token.id);
+ *  const depth = calculateDepth(poolData, BigInt(priceData.index_price_x96));
+ *  console.log("depth", depth);
+ * ```
+ * @param pool The pool data from graphQL
+ * @param indexPriceX96 The index price of the token
+ */
+export function calculateDepth(pool: any, indexPriceX96: bigint): {bids: Depth[]; asks: Depth[]} {
     const priceState = pool.priceState;
     const priceVertices = convertPriceVertices(priceState);
     const position = pool.globalLiquidityPosition;
