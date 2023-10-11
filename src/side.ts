@@ -8,3 +8,7 @@ export function isLong(side: number): boolean {
 export function isShort(side: number): boolean {
     return !isLong(side);
 }
+
+export function flipSide(side: number): number {
+    return isLong(side) ? SIDE_SHORT : SIDE_LONG;
+}
