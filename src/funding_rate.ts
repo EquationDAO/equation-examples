@@ -2,7 +2,6 @@ import Decimal from "decimal.js";
 import {
     ADJUST_FUNDING_RATE_INTERVAL,
     BASIS_POINTS_DIVISOR,
-    PREMIUM_RATE_AVG_DENOMINATOR,
     PREMIUM_RATE_CLAMP_BOUNDARY_X96,
     Q96,
     SAMPLE_PREMIUM_RATE_INTERVAL,
@@ -26,8 +25,6 @@ export function calculateFundingRate(pool: any, currentTime: Date) {
         sample.cumulativePremiumRateX96 = "0";
         sample.sampleCount = 0;
     }
-    // next hour
-    currentTimestamp = lastAdjustFundingRateTime + ADJUST_FUNDING_RATE_INTERVAL;
 
     sample.cumulativePremiumRateX96 = BigInt(sample.cumulativePremiumRateX96);
     sample.sampleCount = BigInt(sample.sampleCount);
@@ -51,10 +48,12 @@ export function calculateFundingRate(pool: any, currentTime: Date) {
         premiumRateX96 * (((sample.sampleCount + 1n + sampleCountAfter) * sampleCountDelta) >> 1n);
     const cumulativePremiumRateX96 = sample.cumulativePremiumRateX96 + cumulativePremiumRateDeltaX96;
 
+    // sampleCountAfter * (1 + sampleCountAfter) / 2
+    const denominator = 8n * ((BigInt(sampleCountAfter) * (1n + BigInt(sampleCountAfter))) / 2n);
     const premiumRateAvgX96 =
         cumulativePremiumRateX96 >= 0n
-            ? ceilDiv(cumulativePremiumRateX96, PREMIUM_RATE_AVG_DENOMINATOR)
-            : -ceilDiv(-BigInt(cumulativePremiumRateX96), PREMIUM_RATE_AVG_DENOMINATOR);
+            ? ceilDiv(cumulativePremiumRateX96, denominator)
+            : -ceilDiv(-BigInt(cumulativePremiumRateX96), denominator);
 
     const fundingRateDeltaX96 = premiumRateAvgX96 + clamp(premiumRateAvgX96, interestRate);
     return {
