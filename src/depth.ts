@@ -16,7 +16,7 @@ export interface Depth {
  * Calculate the depth of the pool.
  * @example
  * ```ts
- *  const poolID = "0x5dcbeceb35a0e781ed60d859a97bf239ba5bf7dc";
+ *  const poolID = "0xe8489d514aef77c5730dde4eac46b8f2d9ffd21c";
  *  const poolData = await loadPool(poolID);
  *  const priceData = await loadPrice(poolData.token.id);
  *  const depth = calculateDepth(poolData, BigInt(priceData.index_price_x96));
