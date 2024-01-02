@@ -13,7 +13,7 @@ import {loadPositions} from "./position";
 import {calculateDepth} from "./depth";
 
 async function main() {
-    const poolID = "0x5dcbeceb35a0e781ed60d859a97bf239ba5bf7dc";
+    const poolID = "0xe8489d514aef77c5730dde4eac46b8f2d9ffd21c";
     const poolData = await loadPool(poolID);
     console.log("poolData", poolData);
 
@@ -29,14 +29,14 @@ async function main() {
     const depth = calculateDepth(poolData, BigInt(priceData.index_price_x96));
     console.log("depth", depth);
 
-    const provider = new ethers.providers.JsonRpcProvider("https://arbitrum-goerli.publicnode.com");
+    const provider = new ethers.providers.JsonRpcProvider("https://rpc.arb1.arbitrum.gateway.fm");
     const wallet = new ethers.Wallet(`${process.env.PRIVATE_KEY}`, provider);
     console.log("your address:", wallet.address);
 
-    const Router = Router__factory.connect("0xcb4010f59be885E4A8c85143d78e612EC143FBd6", wallet);
-    const PositionRouter = PositionRouter__factory.connect("0xA9e98bE3a42724E763B521AE16F6923d2b6597E3", wallet);
-    const OrderBook = OrderBook__factory.connect("0x7A41fF48ab803D1991Deb2Fa56229534c86436a1", wallet);
-    const USD = ERC20__factory.connect("0x58e7F6b126eCC1A694B19062317b60Cf474E3D17", wallet);
+    const Router = Router__factory.connect("0x911a71DDa951958913219f7cBD7e4a297ca52B3B", wallet);
+    const PositionRouter = PositionRouter__factory.connect("0xc3B609357539A35673cc50e5Ca4fA57da1BFeC7b", wallet);
+    const OrderBook = OrderBook__factory.connect("0x0A41c964781312413Ac51d1A11efff1D0cfF2832", wallet);
+    const USD = ERC20__factory.connect("0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9", wallet);
 
     // approve plugin to modify your position
     let isApproved = await Router.isPluginApproved(wallet.address, PositionRouter.address);

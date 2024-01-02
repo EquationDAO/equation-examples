@@ -6,23 +6,24 @@ import {decodeAPIServerResponse} from "./util";
  * load price data from api server
  * @example
  * ```ts
- *  {
- *      address: '0xECF628c20E5E1C0e0A90226d60FAd547AF850E0F',
- *      market_price_x96: '123108664984260826597',
- *      market_price: '1553.849806400548395765',
- *      min_market_price_x96: '123108664984260826597',
- *      min_market_price: '1553.849806400548395765',
- *      max_market_price_x96: '123108664984260826597',
- *      max_market_price: '1553.849806400548395765',
- *      index_price_x96: '123111717402352687768',
- *      index_price: '1553.888333333333333316',
- *      min_index_price_x96: '123111717402352687768',
- *      min_index_price: '1553.888333333333333316',
- *      max_index_price_x96: '123111717402352687768',
- *      max_index_price: '1553.888333333333333316'
- *  }
+ * {
+ *    "id": 2,
+ *    "address": "0x23EEF5f7A8b37b2310e9aC9611E35fa999143810",
+ *    "market_price_x96": "188956527944421047415",
+ *    "market_price": "2384.966682906486408802",
+ *    "min_market_price_x96": "188956527944421047415",
+ *    "min_market_price": "2384.966682906486408802",
+ *    "max_market_price_x96": "188956527944421047415",
+ *    "max_market_price": "2384.966682906486408802",
+ *    "index_price_x96": "188670645038030999197",
+ *    "index_price": "2381.358333333333333322",
+ *    "min_index_price_x96": "188670645038030999197",
+ *    "min_index_price": "2381.358333333333333322",
+ *    "max_index_price_x96": "188670645038030999197",
+ *    "max_index_price": "2381.358333333333333322"
+ * }
  * ```
- * @access https://api-arbitrum-goerli.equation.org/v1/tokens/0xECF628c20E5E1C0e0A90226d60FAd547AF850E0F
+ * @access https://api-arbitrum.equation.org/v1/tokens/0x23eef5f7a8b37b2310e9ac9611e35fa999143810
  * @param address The address of the token, not the pool.
  */
 export async function loadPrice(address: string) {
