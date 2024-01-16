@@ -9,7 +9,6 @@ import {
 } from "./constants";
 import {isLong} from "./side";
 import {ceilDiv, mulDivUp, toBigInt} from "./util";
-import {loadPool} from "./pool";
 
 /**
  * Calculate the funding rate of the pool.
@@ -87,19 +86,3 @@ function clamp(premiumRateAvgX96: bigint, interestRate: bigint): bigint {
         return rateDeltaX96;
     }
 }
-
-async function main() {
-    const poolID = "0xfdd12164c0ed5a588dac73c6d401cc08500c6a4c";
-    const poolData = await loadPool(poolID);
-    const fundingRate = calculateFundingRate(poolData, new Date());
-    console.log("fundingRate", fundingRate);
-}
-
-main()
-    .then(() => {
-        process.exit(0);
-    })
-    .catch((error) => {
-        console.error(error);
-        process.exit(1);
-    });
