@@ -5,9 +5,11 @@ import {
     PREMIUM_RATE_CLAMP_BOUNDARY_X96,
     Q96,
     SAMPLE_PREMIUM_RATE_INTERVAL,
+    USD_DECIMALS,
 } from "./constants";
 import {isLong} from "./side";
 import {ceilDiv, mulDivUp, toBigInt} from "./util";
+import {loadPool} from "./pool";
 
 /**
  * Calculate the funding rate of the pool.
@@ -44,7 +46,7 @@ export function calculateFundingRate(pool: any, currentTime: Date): {fundingRate
     const lastSamplingTime = lastAdjustFundingRateTime + sample.sampleCount * SAMPLE_PREMIUM_RATE_INTERVAL;
     const timeDelta = currentTimestamp - lastSamplingTime;
 
-    const liquidity = toBigInt(position.liquidity, token.decimals);
+    const liquidity = toBigInt(position.liquidity, USD_DECIMALS);
     const maxPriceImpactLiquidity = BigInt(token.maxPriceImpactLiquidity);
     let premiumRateX96 = BigInt(priceState.premiumRateX96);
     premiumRateX96 =
@@ -85,3 +87,19 @@ function clamp(premiumRateAvgX96: bigint, interestRate: bigint): bigint {
         return rateDeltaX96;
     }
 }
+
+async function main() {
+    const poolID = "0xfdd12164c0ed5a588dac73c6d401cc08500c6a4c";
+    const poolData = await loadPool(poolID);
+    const fundingRate = calculateFundingRate(poolData, new Date());
+    console.log("fundingRate", fundingRate);
+}
+
+main()
+    .then(() => {
+        process.exit(0);
+    })
+    .catch((error) => {
+        console.error(error);
+        process.exit(1);
+    });
