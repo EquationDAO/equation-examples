@@ -5,6 +5,7 @@ import {
     PREMIUM_RATE_CLAMP_BOUNDARY_X96,
     Q96,
     SAMPLE_PREMIUM_RATE_INTERVAL,
+    USD_DECIMALS,
 } from "./constants";
 import {isLong} from "./side";
 import {ceilDiv, mulDivUp, toBigInt} from "./util";
@@ -44,7 +45,7 @@ export function calculateFundingRate(pool: any, currentTime: Date): {fundingRate
     const lastSamplingTime = lastAdjustFundingRateTime + sample.sampleCount * SAMPLE_PREMIUM_RATE_INTERVAL;
     const timeDelta = currentTimestamp - lastSamplingTime;
 
-    const liquidity = toBigInt(position.liquidity, token.decimals);
+    const liquidity = toBigInt(position.liquidity, USD_DECIMALS);
     const maxPriceImpactLiquidity = BigInt(token.maxPriceImpactLiquidity);
     let premiumRateX96 = BigInt(priceState.premiumRateX96);
     premiumRateX96 =
