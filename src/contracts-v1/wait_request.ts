@@ -1,6 +1,6 @@
 import fetch from "node-fetch";
 import {Config} from "./config";
-import {decodeGraphQLResponse} from "./util";
+import {decodeGraphQLResponse} from "../share/util";
 import {ContractTransaction} from "ethers";
 
 export async function waitIncreaseRequest(txPromise: Promise<ContractTransaction>) {

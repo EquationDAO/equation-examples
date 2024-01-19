@@ -10,9 +10,9 @@ import {
     OrderBook__factory,
 } from "../../typechain-types/factories/contracts-v1";
 import {ERC20__factory} from "../../typechain-types/factories/ERC20__factory";
-import {SIDE_LONG} from "./side";
-import {mulDivUp} from "./util";
-import {BASIS_POINTS_DIVISOR} from "./constants";
+import {SIDE_LONG} from "../share/side";
+import {mulDivUp} from "../share/util";
+import {BASIS_POINTS_DIVISOR} from "../share/constants";
 import {waitDecreaseRequest, waitIncreaseRequest, waitOrderBookRequest} from "./wait_request";
 import {loadPositions} from "./position";
 import {calculateDepth} from "./depth";

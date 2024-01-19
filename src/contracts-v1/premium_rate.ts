@@ -1,6 +1,6 @@
 import Decimal from "decimal.js";
-import {Q96} from "./constants";
-import {isLong} from "./side";
+import {Q96} from "../share/constants";
+import {isLong} from "../share/side";
 
 /**
  * Calculate the premium rate of the pool.

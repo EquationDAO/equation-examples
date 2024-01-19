@@ -7,8 +7,7 @@ import {decodeAPIServerResponse} from "../share/util";
  * @example
  * ```ts
  * {
- *    "id": 2,
- *    "address": "0x23EEF5f7A8b37b2310e9aC9611E35fa999143810",
+ *    "address": "0xbB6c466a26CECdbA3d7437704bfc34E112D27B83",
  *    "market_price_x96": "188956527944421047415",
  *    "market_price": "2384.966682906486408802",
  *    "min_market_price_x96": "188956527944421047415",
@@ -23,10 +22,10 @@ import {decodeAPIServerResponse} from "../share/util";
  *    "max_index_price": "2381.358333333333333322"
  * }
  * ```
- * @access https://api-arbitrum.equation.org/v1/tokens/0x23eef5f7a8b37b2310e9ac9611e35fa999143810
- * @param address The address of the token, not the pool.
+ * @access https://api-v2-arbitrum.equation.org/v1/prices/0xbB6c466a26CECdbA3d7437704bfc34E112D27B83
+ * @param address The address of the market
  */
 export async function loadPrice(address: string) {
-    const response = await fetch(`${Config.apiServerEndpoint}/v1/tokens/${address}`, {method: "GET"});
+    const response = await fetch(`${Config.apiServerEndpoint}/v1/prices/${address}`, {method: "GET"});
     return decodeAPIServerResponse(response);
 }
