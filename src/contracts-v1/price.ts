@@ -1,6 +1,6 @@
 import fetch from "node-fetch";
 import {Config} from "./config";
-import {decodeAPIServerResponse} from "./util";
+import {decodeAPIServerResponse} from "../share/util";
 
 /**
  * load price data from api server

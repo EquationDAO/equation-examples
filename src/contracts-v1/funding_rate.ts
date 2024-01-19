@@ -6,9 +6,9 @@ import {
     Q96,
     SAMPLE_PREMIUM_RATE_INTERVAL,
     USD_DECIMALS,
-} from "./constants";
-import {isLong} from "./side";
-import {ceilDiv, mulDivUp, toBigInt} from "./util";
+} from "../share/constants";
+import {isLong} from "../share/side";
+import {ceilDiv, mulDivUp, toBigInt} from "../share/util";
 
 /**
  * Calculate the funding rate of the pool.
@@ -69,9 +69,11 @@ export function calculateFundingRate(pool: any, currentTime: Date): {fundingRate
             : -ceilDiv(-BigInt(cumulativePremiumRateX96), denominator);
 
     const fundingRateDeltaX96 = premiumRateAvgX96 + clamp(premiumRateAvgX96, interestRate);
+
+    const fundingRateX96 = clampFundingRate(fundingRateDeltaX96, BigInt(token.maxFundingRate));
     return {
-        fundingRateX96: fundingRateDeltaX96,
-        fundingRate: new Decimal(fundingRateDeltaX96.toString()).div(Q96.toString()),
+        fundingRateX96: fundingRateX96,
+        fundingRate: new Decimal(fundingRateX96.toString()).div(Q96.toString()),
     };
 }
 
@@ -84,5 +86,16 @@ function clamp(premiumRateAvgX96: bigint, interestRate: bigint): bigint {
         return -PREMIUM_RATE_CLAMP_BOUNDARY_X96;
     } else {
         return rateDeltaX96;
+    }
+}
+
+function clampFundingRate(fundingRateDeltaX96: bigint, maxFundingRate: bigint): bigint {
+    const maxFundingRateX96 = mulDivUp(maxFundingRate, Q96, BASIS_POINTS_DIVISOR);
+    if (fundingRateDeltaX96 > maxFundingRateX96) {
+        return maxFundingRateX96;
+    } else if (fundingRateDeltaX96 < -maxFundingRateX96) {
+        return -maxFundingRateX96;
+    } else {
+        return fundingRateDeltaX96;
     }
 }

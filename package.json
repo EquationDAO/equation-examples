@@ -4,8 +4,9 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "build": "typechain --target ethers-v5 --out-dir typechain-types './abis/*.json' && tsc",
-        "example": "node dist/src/index",
+        "build": "typechain --target ethers-v5 --out-dir typechain-types './abis/**/*.json' && tsc",
+        "example-v1": "node dist/src/contracts-v1/index",
+        "example-v2": "node dist/src/contracts-v2/index",
         "clean": "rm -rf dist typechain-types"
     },
     "author": "",

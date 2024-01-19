@@ -1,7 +1,7 @@
 import mustache from "mustache";
 import fetch from "node-fetch";
 import {Config} from "./config";
-import {decodeGraphQLResponse} from "./util";
+import {decodeGraphQLResponse} from "../share/util";
 
 /**
  * Load positions from graphQL

@@ -1,10 +1,10 @@
 import fetch from "node-fetch";
 import {Config} from "./config";
-import {decodeGraphQLResponse} from "./util";
+import {decodeGraphQLResponse} from "../share/util";
 
 /**
  * Load pool data from graphQL
- *  * @example
+ * @example
  * ```ts
  *  const poolID = "0xe8489d514aef77c5730dde4eac46b8f2d9ffd21c";
  *  const poolData = await loadPool(poolID);

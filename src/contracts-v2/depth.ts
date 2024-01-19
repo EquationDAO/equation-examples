@@ -1,7 +1,7 @@
 import Decimal from "decimal.js";
-import {BASIS_POINTS_DIVISOR, Q96, TOKEN_DECIMALS, USD_DECIMALS} from "./constants";
-import {flipSide, isLong} from "./side";
-import {min, mulDiv, toBigInt, toDecimal, toPriceDecimal} from "./util";
+import {BASIS_POINTS_DIVISOR, Q96, TOKEN_DECIMALS, USD_DECIMALS} from "../share/constants";
+import {flipSide, isLong} from "../share/side";
+import {min, mulDiv, toBigInt, toDecimal, toPriceDecimal} from "../share/util";
 
 export interface Depth {
     premiumRateRangeX96: {left: bigint; right: bigint};
@@ -13,31 +13,31 @@ export interface Depth {
 }
 
 /**
- * Calculate the depth of the pool.
+ * Calculate the depth of the market.
  * @example
  * ```ts
- *  const poolID = "0xe8489d514aef77c5730dde4eac46b8f2d9ffd21c";
- *  const poolData = await loadPool(poolID);
- *  const priceData = await loadPrice(poolData.token.id);
- *  const depth = calculateDepth(poolData, BigInt(priceData.index_price_x96));
+ *  const marketID = "0xbB6c466a26CECdbA3d7437704bfc34E112D27B83";
+ *  const marketData = await loadMarket(marketID);
+ *  const priceData = await loadPrice(marketID);
+ *  const depth = calculateDepth(marketData, BigInt(priceData.index_price_x96));
  *  console.log("depth", depth);
  * ```
- * @param pool The pool data from graphQL
+ * @param market The market data from api server
  * @param indexPriceX96 The index price of the token
  */
-export function calculateDepth(pool: any, indexPriceX96: bigint): {bids: Depth[]; asks: Depth[]} {
-    const priceState = pool.priceState;
+export function calculateDepth(market: any, indexPriceX96: bigint): {bids: Depth[]; asks: Depth[]} {
+    const priceState = market.price_state;
     const priceVertices = convertPriceVertices(priceState);
-    const position = pool.globalLiquidityPosition;
+    const position = market.global_liquidity_position;
 
-    const currentIndex = searchCurrentIndex(priceVertices, BigInt(priceState.premiumRateX96));
+    const currentIndex = searchCurrentIndex(priceVertices, BigInt(priceState.premium_rate_x96));
 
-    const oppositeSidePriceVertices = transformPriceVerticesToOppositeSide(pool, currentIndex, priceVertices);
+    const oppositeSidePriceVertices = transformPriceVerticesToOppositeSide(market, currentIndex, priceVertices);
     console.log(priceVertices, oppositeSidePriceVertices);
 
     const depths = transformPriceVerticesToDepth(
-        toBigInt(position.netSize, TOKEN_DECIMALS),
-        BigInt(priceState.premiumRateX96),
+        toBigInt(position.net_size, TOKEN_DECIMALS),
+        BigInt(priceState.premium_rate_x96),
         indexPriceX96,
         position.side,
         priceVertices,
@@ -46,13 +46,13 @@ export function calculateDepth(pool: any, indexPriceX96: bigint): {bids: Depth[]
     );
 
     let {depths: oppositeSideDepths, sizeTotal: oppositeSideSizeTotal} = transformUsedPriceVerticesToDepth(
-        toBigInt(position.netSize, TOKEN_DECIMALS),
-        BigInt(priceState.premiumRateX96),
+        toBigInt(position.net_size, TOKEN_DECIMALS),
+        BigInt(priceState.premium_rate_x96),
         indexPriceX96,
         position.side,
         currentIndex,
         priceVertices,
-        priceState.liquidationBufferNetSizes.map((item: string) => BigInt(item)),
+        priceState.liquidation_buffer_net_sizes.map((item: string) => BigInt(item)),
     );
 
     oppositeSideDepths = [
@@ -80,7 +80,7 @@ function searchCurrentIndex(priceVertices: any, premiumRateX96: bigint) {
     for (let i = 1; i < priceVertices.length; i++) {
         const prev = priceVertices[i - 1];
         const next = priceVertices[i];
-        if (premiumRateX96 > prev.premiumRateX96 && premiumRateX96 <= next.premiumRateX96) {
+        if (premiumRateX96 > prev.premium_rate_x96 && premiumRateX96 <= next.premium_rate_x96) {
             currentIndex = i;
             break;
         }
@@ -88,19 +88,21 @@ function searchCurrentIndex(priceVertices: any, premiumRateX96: bigint) {
     return currentIndex;
 }
 
-function transformPriceVerticesToOppositeSide(pool: any, currentIndex: number, priceVertices: any[]) {
-    const token = pool.token;
-    const priceState = pool.priceState;
-    const position = pool.globalLiquidityPosition;
+function transformPriceVerticesToOppositeSide(market: any, currentIndex: number, priceVertices: any[]) {
+    const priceState = market.price_state;
+    const position = market.global_liquidity_position;
 
     let oppositeSidePriceVertices = [];
-    if (currentIndex > 0 && priceState.pendingVertexIndex > 0) {
-        const indexPriceUsedX96 = BigInt(priceState.indexPriceUsedX96);
-        const priceVerticesConfig = convertPriceVerticesConfig(token);
-        const liquidity = min(toBigInt(position.liquidity, USD_DECIMALS), BigInt(token.maxPriceImpactLiquidity));
+    if (currentIndex > 0 && priceState.pending_vertex_index > 0) {
+        const indexPriceUsedX96 = BigInt(priceState.index_price_used_x96);
+        const priceVerticesConfig = convertPriceVerticesConfig(market.market_config.price_config);
+        const liquidity = min(
+            toBigInt(position.liquidity, USD_DECIMALS),
+            BigInt(market.market_config.price_config.max_price_impact_liquidity),
+        );
 
         oppositeSidePriceVertices.push(priceVertices[0]);
-        for (let i = 1; i <= priceState.pendingVertexIndex; i++) {
+        for (let i = 1; i <= priceState.pending_vertex_index; i++) {
             oppositeSidePriceVertices.push({
                 id: i,
                 ...calculatePriceVertex(
@@ -111,11 +113,11 @@ function transformPriceVerticesToOppositeSide(pool: any, currentIndex: number, p
                 ),
             });
         }
-        if (priceState.pendingVertexIndex < priceVertices.length - 1) {
-            const prev = oppositeSidePriceVertices[priceState.pendingVertexIndex];
-            const next = priceVertices[priceState.pendingVertexIndex + 1];
+        if (priceState.pending_vertex_index < priceVertices.length - 1) {
+            const prev = oppositeSidePriceVertices[priceState.pending_vertex_index];
+            const next = priceVertices[priceState.pending_vertex_index + 1];
             if (next.size <= prev.size || next.premiumRateX96 <= prev.premiumRateX96) {
-                for (let i = priceState.pendingVertexIndex + 1; i < priceVertices.length; i++) {
+                for (let i = priceState.pending_vertex_index + 1; i < priceVertices.length; i++) {
                     oppositeSidePriceVertices.push({
                         id: i,
                         ...calculatePriceVertex(
@@ -254,24 +256,25 @@ function transformUsedPriceVerticesToDepth(
 
 function convertPriceVertices(priceState: any) {
     const target = [];
-    for (let item of priceState.priceVertices) {
+    let i = 0;
+    for (let item of priceState.price_vertices) {
         target.push({
-            id: parseInt(item.id.split(":")[1]),
+            id: i++,
             size: toBigInt(item.size, TOKEN_DECIMALS),
-            premiumRateX96: BigInt(item.premiumRateX96),
+            premiumRateX96: BigInt(item.premium_rate_x96),
             raw: item,
         });
     }
     return target;
 }
 
-function convertPriceVerticesConfig(token: any) {
+function convertPriceVerticesConfig(priceConfig: any) {
     const target = [];
-    for (let item of token.vertices) {
+    for (let item of priceConfig.vertices) {
         target.push({
             id: parseInt(item.id.split(":")[1]),
-            balanceRate: BigInt(item.balanceRate),
-            premiumRate: BigInt(item.premiumRate),
+            balanceRate: BigInt(item.balance_rate),
+            premiumRate: BigInt(item.premium_rate),
             raw: item,
         });
     }

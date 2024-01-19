@@ -4,10 +4,15 @@ import {loadPool} from "./pool";
 import {calculatePremiumRate} from "./premium_rate";
 import {loadPrice} from "./price";
 import "dotenv/config";
-import {ERC20__factory, PositionRouter__factory, Router__factory, OrderBook__factory} from "../typechain-types";
-import {SIDE_LONG} from "./side";
-import {mulDivUp} from "./util";
-import {BASIS_POINTS_DIVISOR} from "./constants";
+import {
+    PositionRouter__factory,
+    Router__factory,
+    OrderBook__factory,
+} from "../../typechain-types/factories/contracts-v1";
+import {ERC20__factory} from "../../typechain-types/factories/ERC20__factory";
+import {SIDE_LONG} from "../share/side";
+import {mulDivUp} from "../share/util";
+import {BASIS_POINTS_DIVISOR} from "../share/constants";
 import {waitDecreaseRequest, waitIncreaseRequest, waitOrderBookRequest} from "./wait_request";
 import {loadPositions} from "./position";
 import {calculateDepth} from "./depth";
