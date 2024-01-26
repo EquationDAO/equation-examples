@@ -24,8 +24,8 @@ import {BASIS_POINTS_DIVISOR} from "../share/constants";
 import {loadLiquidityPositions, loadPositions} from "./position";
 import {OrderBook, PositionRouter} from "../../typechain-types/contracts-v2";
 
-const rpc = "https://sepolia-rollup.arbitrum.io/rpc";
-const marketID = "0x6E4DC85FdF679862115F3913582930C1573087Bd";
+const rpc = "https://arbitrum.llamarpc.com";
+const marketID = "0xA3185AC5F655a2a93769fe83A63c82A192405A54"; // STX
 const slippage = 1_000_000n; // 1%
 
 async function main() {
@@ -196,10 +196,10 @@ async function example_approvePlugin() {
     const wallet = new ethers.Wallet(`${process.env.PRIVATE_KEY}`, provider);
     console.log("your address:", wallet.address);
 
-    const Router = Router__factory.connect("0x49Fd5EcFb30FD219261A2e76ae2aBaC59d12E19C", wallet);
-    const PositionRouter = PositionRouter__factory.connect("0x59C3c42A6a6A90118B8003CB0d1fFD5185c8d8fc", wallet);
-    const OrderBook = OrderBook__factory.connect("0xA28233bF7d342e1fe2dEB090178a32F25efbF220", wallet);
-    const USD = ERC20__factory.connect("0x130a10D76E53eC70C2d1c05e9C2EcfB5C3350fe0", wallet);
+    const Router = Router__factory.connect("0x6903c646D737Ea7EFC78B515050F3bBa9808D2F8", wallet);
+    const PositionRouter = PositionRouter__factory.connect("0x0C2e09f9a752a0C9E2E9218aB239d212cdE6afd3", wallet);
+    const OrderBook = OrderBook__factory.connect("0xF0cffc35eD6A82646fC0465f7c92C31a1A884D21", wallet);
+    const USD = ERC20__factory.connect("0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9", wallet);
 
     // approve plugin to modify your position
     let isApproved = await Router.isPluginApproved(wallet.address, PositionRouter.address);
