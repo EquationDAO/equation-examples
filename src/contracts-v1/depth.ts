@@ -30,7 +30,7 @@ export function calculateDepth(pool: any, indexPriceX96: bigint): {bids: Depth[]
     const priceVertices = convertPriceVertices(priceState);
     const position = pool.globalLiquidityPosition;
 
-    const currentIndex = searchCurrentIndex(priceVertices, BigInt(priceState.premiumRateX96));
+    const currentIndex = searchCurrentIndex(priceVertices, toBigInt(position.netSize, TOKEN_DECIMALS));
 
     const oppositeSidePriceVertices = transformPriceVerticesToOppositeSide(pool, currentIndex, priceVertices);
     console.log(priceVertices, oppositeSidePriceVertices);
@@ -52,7 +52,7 @@ export function calculateDepth(pool: any, indexPriceX96: bigint): {bids: Depth[]
         position.side,
         currentIndex,
         priceVertices,
-        priceState.liquidationBufferNetSizes.map((item: string) => BigInt(item)),
+        priceState.liquidationBufferNetSizes.map((item: string) => toBigInt(item, TOKEN_DECIMALS)),
     );
 
     oppositeSideDepths = [
@@ -75,12 +75,12 @@ export function calculateDepth(pool: any, indexPriceX96: bigint): {bids: Depth[]
     }
 }
 
-function searchCurrentIndex(priceVertices: any, premiumRateX96: bigint) {
+function searchCurrentIndex(priceVertices: any, netSize: bigint) {
     let currentIndex = 0;
     for (let i = 1; i < priceVertices.length; i++) {
         const prev = priceVertices[i - 1];
         const next = priceVertices[i];
-        if (premiumRateX96 > prev.premiumRateX96 && premiumRateX96 <= next.premiumRateX96) {
+        if (netSize > toBigInt(prev.size, TOKEN_DECIMALS) && netSize <= toBigInt(next.size, TOKEN_DECIMALS)) {
             currentIndex = i;
             break;
         }
@@ -205,14 +205,15 @@ function transformUsedPriceVerticesToDepth(
 
                 sizeTotal += sizeAvailable;
 
+                const right = priceVertices[i];
                 const depth = {
                     premiumRateRangeX96: {
-                        left: normalizePremiumRateX96(left.premiumRateX96, side),
-                        right: normalizePremiumRateX96(left.premiumRateX96, side),
+                        left: normalizePremiumRateX96(right.premiumRateX96, side),
+                        right: normalizePremiumRateX96(right.premiumRateX96, side),
                     },
                     marketPriceRangeX96: {
-                        left: calculateMarketPriceX96(indexPriceX96, left.premiumRateX96, side),
-                        right: calculateMarketPriceX96(indexPriceX96, left.premiumRateX96, side),
+                        left: calculateMarketPriceX96(indexPriceX96, right.premiumRateX96, side),
+                        right: calculateMarketPriceX96(indexPriceX96, right.premiumRateX96, side),
                     },
                     tradePriceX96: 0n,
                     tradePrice: new Decimal(0),
