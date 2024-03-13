@@ -1,0 +1,434 @@
+[
+    {
+        "inputs": [
+            {
+                "internalType": "contract Router",
+                "name": "_router",
+                "type": "address"
+            },
+            {
+                "internalType": "contract IRouter",
+                "name": "_routerV1",
+                "type": "address"
+            },
+            {
+                "internalType": "contract FarmRewardDistributor",
+                "name": "_distributor",
+                "type": "address"
+            },
+            {
+                "internalType": "contract IFarmRewardDistributorV2",
+                "name": "_distributorV2",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "target",
+                "type": "address"
+            }
+        ],
+        "name": "AddressEmptyCode",
+        "type": "error"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "account",
+                "type": "address"
+            }
+        ],
+        "name": "AddressInsufficientBalance",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "FailedInnerCall",
+        "type": "error"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "requiredAmount",
+                "type": "uint256"
+            }
+        ],
+        "name": "InsufficientBalance",
+        "type": "error"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "caller",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "requiredCaller",
+                "type": "address"
+            }
+        ],
+        "name": "InvalidCaller",
+        "type": "error"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "token",
+                "type": "address"
+            }
+        ],
+        "name": "SafeERC20FailedOperation",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "EFC",
+        "outputs": [
+            {
+                "internalType": "contract IEFC",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256[]",
+                "name": "_tokenIDs",
+                "type": "uint256[]"
+            }
+        ],
+        "name": "collectContractsV1ArchitectRewardBatch",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "rewardDebt",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "contract IPool[]",
+                "name": "_pools",
+                "type": "address[]"
+            }
+        ],
+        "name": "collectContractsV1FarmLiquidityRewardBatch",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "rewardDebt",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "contract IPool[]",
+                "name": "_pools",
+                "type": "address[]"
+            },
+            {
+                "internalType": "uint256[]",
+                "name": "_referralTokens",
+                "type": "uint256[]"
+            }
+        ],
+        "name": "collectContractsV1FarmReferralRewardBatch",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "rewardDebt",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "PackedValue",
+                "name": "_nonceAndLockupPeriod",
+                "type": "uint256"
+            },
+            {
+                "internalType": "PackedValue[]",
+                "name": "_packedPoolRewardValues",
+                "type": "uint256[]"
+            },
+            {
+                "internalType": "bytes",
+                "name": "_signature",
+                "type": "bytes"
+            },
+            {
+                "internalType": "address",
+                "name": "_receiver",
+                "type": "address"
+            }
+        ],
+        "name": "collectContractsV1FarmRewardBatch",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "contract IPool[]",
+                "name": "_pools",
+                "type": "address[]"
+            }
+        ],
+        "name": "collectContractsV1FarmRiskBufferFundRewardBatch",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "rewardDebt",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "contract IPool[]",
+                "name": "_pools",
+                "type": "address[]"
+            },
+            {
+                "internalType": "uint256[]",
+                "name": "_referralTokens",
+                "type": "uint256[]"
+            }
+        ],
+        "name": "collectContractsV1ReferralFeeBatch",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256[]",
+                "name": "_ids",
+                "type": "uint256[]"
+            }
+        ],
+        "name": "collectContractsV1StakingRewardBatch",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "rewardDebt",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256[]",
+                "name": "_ids",
+                "type": "uint256[]"
+            }
+        ],
+        "name": "collectContractsV1V3PosStakingRewardBatch",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "rewardDebt",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "PackedValue",
+                "name": "_nonceAndLockupPeriod",
+                "type": "uint256"
+            },
+            {
+                "internalType": "PackedValue[]",
+                "name": "_packedMarketRewardValues",
+                "type": "uint256[]"
+            },
+            {
+                "internalType": "bytes",
+                "name": "_signature",
+                "type": "bytes"
+            },
+            {
+                "internalType": "address",
+                "name": "_receiver",
+                "type": "address"
+            }
+        ],
+        "name": "collectFarmRewardBatch",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "contract IMarketDescriptor[]",
+                "name": "_markets",
+                "type": "address[]"
+            },
+            {
+                "internalType": "uint256[]",
+                "name": "_referralTokens",
+                "type": "uint256[]"
+            }
+        ],
+        "name": "collectReferralFeeBatch",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "distributor",
+        "outputs": [
+            {
+                "internalType": "contract FarmRewardDistributor",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "distributorV2",
+        "outputs": [
+            {
+                "internalType": "contract IFarmRewardDistributorV2",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "bytes[]",
+                "name": "data",
+                "type": "bytes[]"
+            }
+        ],
+        "name": "multicall",
+        "outputs": [
+            {
+                "internalType": "bytes[]",
+                "name": "results",
+                "type": "bytes[]"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "router",
+        "outputs": [
+            {
+                "internalType": "contract Router",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "routerV1",
+        "outputs": [
+            {
+                "internalType": "contract IRouter",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "contract IERC20",
+                "name": "_token",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_amountMinimum",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "_receiver",
+                "type": "address"
+            }
+        ],
+        "name": "sweepToken",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }
+]
